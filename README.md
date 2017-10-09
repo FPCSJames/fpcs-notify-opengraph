@@ -7,7 +7,7 @@ Notify the Facebook Open Graph page scraper when a post's status changes to publ
 WordPress 3.9 or higher
 
 ## Usage
-Upload, activate, and enjoy.
+Upload and activate. Visit the "FPCS Notify Open Graph" page under Settings, and add appropriate credentials for your Facebook app.
 
 ## License
 
