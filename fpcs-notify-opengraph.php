@@ -24,10 +24,10 @@ final class FPCS_Notify_Open_Graph {
 
    public function __construct() {
       add_action('plugins_loaded', [$this, 'plugins_loaded']);
-      add_action('future_to_published', [$this, 'future_to_published'], 10, 1);
+      add_action('future_to_publish', [$this, 'future_to_publish'], 10, 1);
    }
 
-   public function future_to_published($post) {
+   public function future_to_publish($post) {
       require_once('vendor/autoload.php');
 
       $creds = [
@@ -37,13 +37,14 @@ final class FPCS_Notify_Open_Graph {
          'default_graph_version' => 'v2.10'
       ];
       if(empty($creds['app_id']) || empty($creds['app_secret']) || empty($creds['default_access_token'])) {
+         file_put_contents(dirname(__FILE__).'/body.log', 'creds incomplete');
          return;
       }
 
       $fb = new \Facebook\Facebook($creds);
 
       try {
-         $response = $fb->post('/?id='.urlencode(get_permalink($post)).'&scrape=true');
+         $response = $fb->post('/?scrape=true&id='.get_permalink($post));
       } catch(\Facebook\Exceptions\FacebookResponseException $e) {
          write_log('Graph returned an error: '.$e->getMessage());
          return;
@@ -53,11 +54,9 @@ final class FPCS_Notify_Open_Graph {
       }
 
       $body = $response->getDecodedBody();
-      file_put_contents(dirname(__FILE__).'/body.log', print_r($body, true));
-
       $date = new DateTime($body->updated_time, new DateTimeZone('UTC'));
       $date->setTimezone(new DateTimeZone('America/Chicago'));
-      update_post_meta($post-ID, 'fpcs_nog_update_time', $date->format('Y-m-d g:i:sa T'));
+      update_post_meta($post->ID, 'fpcs_nog_update_time', $date->format('Y-m-d g:i:sa T'));
    }
 
    public function plugins_loaded() {

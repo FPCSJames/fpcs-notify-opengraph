@@ -86,7 +86,7 @@ final class FPCS_NOG_Admin {
             'title' => 'App ID',
             'callback' => 'field_app_id',
             'section' => 'fpcs_nog_section-all',
-            'name' => 'lcarets_rets_url',
+            'name' => 'fpcs_nog_app_id',
             'filter' => 'sanitize_text_field'
          ],
          [
